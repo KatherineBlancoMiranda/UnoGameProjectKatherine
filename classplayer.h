@@ -10,9 +10,11 @@ class Player {
 private:
 
 	std::vector<card> cards;
-	bool turn;
+	
 
 public:
+
+	int selectedCard;
 
 	void generateCards() {
 
@@ -58,23 +60,13 @@ public:
 
 		for (int i = 0; i < cards.size(); i++) {
 
-			cout << cards[i].type << " ";
-			cout << cards[i].color;
+			cout << "Tipo: " << cards[i].type << " ";
+			cout << "Color: " << cards[i].color;
 			cout << endl;
 
 		}
 		cout << cards.size();
-
-	}
-
-	void takeInitialCards() {
-
-		for (int i = 0; i < 8; i++) {
-
-			cards.push_back({ cards[0].type, cards[0].color });
-			cards.erase(cards.begin());
-
-		}
+		cout << endl;
 
 	}
 
@@ -84,12 +76,39 @@ public:
 
 	}
 
-	card takeCard() {
+	card takeCard(int cardPosition) {				//Borré metodo takeInitialCard
 
-		card temporalCard = cards[0];
-		cards.erase(cards.begin());
+		card temporalCard = cards[cardPosition];
+		cards.erase(cards.begin() + cardPosition);
 		return temporalCard;
-		
+
+	}
+
+	card seeCard(int cardPosition) {				//Borré metodo takeInitialCard
+
+		return cards[cardPosition];
+
+	}
+
+	bool compareColors(int cardPosition, card usedCard) {
+
+		if (seeCard(cardPosition).color == usedCard.color) {
+
+			return true;
+		}
+
+		return false;
+
+	}
+
+	bool compareType(int cardPosition, card usedCard) {
+
+		if (seeCard(cardPosition).type == usedCard.type) {
+
+			return true;
+		}
+
+		return false;
 
 	}
 

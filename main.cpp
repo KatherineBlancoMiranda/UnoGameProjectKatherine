@@ -3,6 +3,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "classplayer.h"
+#include "showusedcard.h"
 
 using namespace std;
 
@@ -13,22 +14,16 @@ int main()
     Player playerOne;
     Player playerTwo;
     Player cardsSet;
+    card usedCard;
 
     cardsSet.generateCards();
-    cardsSet.showCards();
-    cout << endl;
-    cout << endl;
     cardsSet.shuffleCards();
-    cout << endl;
-    cout << endl;
-    cardsSet.showCards();
-    cout << endl;
-    cout << endl;
+
 
     for (int i = 0; i < 8; i++) {
 
-        playerOne.addCard(cardsSet.takeCard());
-        playerTwo.addCard(cardsSet.takeCard());
+        playerOne.addCard(cardsSet.takeCard(0));
+        playerTwo.addCard(cardsSet.takeCard(0));
 
     }
 
@@ -43,10 +38,36 @@ int main()
     cout << endl;
     cout << endl;
     cardsSet.showCards();
+    cout << endl;
+    cout << endl;
 
+    usedCard = cardsSet.takeCard(0);
+    showUsedCard(usedCard);
+    cout << endl;
+    cout << endl;
 
+    int selectCard;
 
+    while (true) {
 
+        playerOne.showCards();
+        showUsedCard(usedCard);
+
+        cin >> selectCard;
+
+        if (playerOne.compareColors(selectCard, usedCard)) {
+
+            usedCard = playerOne.takeCard(selectCard);
+            
+        }
+        if (playerOne.compareType(selectCard, usedCard)) {
+
+            usedCard = playerOne.takeCard(selectCard);
+
+        }
+        
+
+    }
 
 
 
