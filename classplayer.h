@@ -1,20 +1,41 @@
 #pragma once
 #include <iostream>
 #include <cstdlib>
+#include <SFML/Graphics.hpp>
 #include "cardvariable.h"
+#include "showusedcard.h"
 
 using namespace std;
 
 class Player {
 
-private:
-
-	std::vector<card> cards;
-	
-
 public:
 
-	int selectedCard;
+	Player() {
+
+		sprite.setTextureRect(sf::IntRect(0, 0, 57, 86));
+		switchCard(4, 3);
+
+	}
+
+	void doActions(card* usedCard) {
+
+		int cardSelection;
+
+		showCards();
+		
+
+		cin >> cardSelection;
+
+		if (compareColors(cardSelection, *usedCard)|| compareType(cardSelection, *usedCard)) {
+
+			*usedCard = takeCard(cardSelection);
+
+		}
+
+		showUsedCard(*usedCard);
+
+	}
 
 	void generateCards() {
 
@@ -76,7 +97,7 @@ public:
 
 	}
 
-	card takeCard(int cardPosition) {				//Borré metodo takeInitialCard
+	card takeCard(int cardPosition) {				
 
 		card temporalCard = cards[cardPosition];
 		cards.erase(cards.begin() + cardPosition);
@@ -84,7 +105,7 @@ public:
 
 	}
 
-	card seeCard(int cardPosition) {				//Borré metodo takeInitialCard
+	card seeCard(int cardPosition) {				
 
 		return cards[cardPosition];
 
@@ -111,5 +132,44 @@ public:
 		return false;
 
 	}
+
+	void drawCards(sf:: RenderWindow &window, float x, float y) {
+
+		sprite.setPosition(x, y);
+
+		for (int i = 0; i < cards.size(); i++) {
+
+			switchCard(cards[i].type, cards[i].color);
+			window.draw(sprite);
+			sprite.move(70, 0);
+
+		}
+
+
+		//window.draw(sprite);
+
+	}
+
+	void setCardTexture(sf:: Texture &texture) {
+
+		sprite.setTexture(texture);
+
+
+	}
+
+	void switchCard(int type,  int color) {
+
+		sprite.setTextureRect(sf::IntRect(type*57, color*86, 57, 86));
+
+	}
+
+
+private:
+
+	std::vector<card> cards;
+	sf::Sprite sprite;
+
+	
+
 
 };
