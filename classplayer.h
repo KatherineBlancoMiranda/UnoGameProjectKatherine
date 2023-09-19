@@ -13,9 +13,6 @@ public:
 
 	Player() {
 
-		sprite.setTextureRect(sf::IntRect(0, 0, 57, 86));
-		switchCard(4, 3);
-
 	}
 
 	void doActions(card* usedCard) {
@@ -58,8 +55,8 @@ public:
 
 			}
 
-			cards.push_back({ 13, 5 });
-			cards.push_back({ 14, 5 });
+			cards.push_back({ 13, 3 });
+			cards.push_back({ 14, 3 });
 
 		}
 
@@ -133,20 +130,40 @@ public:
 
 	}
 
-	void drawCards(sf:: RenderWindow &window, float x, float y) {
+	void drawCards(sf:: RenderWindow &window, float x, float y, int& selectCard, card& usedCard, bool& pressSpace) {
+
+		if (selectCard < 0) {
+
+			selectCard = 0;
+
+		}
+		if (selectCard > cards.size() - 1) {
+
+			selectCard = cards.size() - 1;
+
+		}
 
 		sprite.setPosition(x, y);
 
 		for (int i = 0; i < cards.size(); i++) {
 
 			switchCard(cards[i].type, cards[i].color);
+			if (selectCard == i) {
+
+				sprite.move(0, 30);
+
+			}
+			
 			window.draw(sprite);
 			sprite.move(70, 0);
+			sprite.setPosition(sprite.getPosition().x, y);
 
 		}
 
-
-		//window.draw(sprite);
+		sprite.setPosition(0, 300);
+		switchCard(usedCard.type, usedCard.color);
+		window.draw(sprite);
+		playerActions(usedCard, pressSpace, selectCard);
 
 	}
 
@@ -169,7 +186,37 @@ private:
 	std::vector<card> cards;
 	sf::Sprite sprite;
 
-	
+	void playerActions(card& usedCard, bool& pressSpace, int& selectCard) {
 
+		if (pressSpace&&validCard(usedCard, selectCard)) {
+
+			usedCard = takeCard(selectCard);
+		}
+
+	}
+
+	bool validCard(card usedCard, int selectCard) {
+
+		if (seeCard(selectCard).color == usedCard.color) {
+
+			return true;
+
+		}
+
+		if (seeCard(selectCard).type == usedCard.type) {
+
+			return true;
+
+		}
+
+		if (seeCard(selectCard).type == 13 || seeCard(selectCard).type == 14) {
+
+			return true;
+
+		}
+
+		return false;
+
+	}
 
 };

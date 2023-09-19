@@ -7,17 +7,75 @@
 #include "showusedcard.h"
 
 
+
+void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace) {
+
+    sf::Event event;
+    pressSpace = false;
+
+    while (window.pollEvent(event)) {
+
+        if (event.type == sf::Event::Closed) {
+
+            window.close();
+
+        }
+
+        if (event.type == sf::Event::KeyPressed) {
+
+            if (event.key.code == sf::Keyboard::Left) {
+
+                selectCard--;
+
+            }
+
+            if (event.key.code == sf::Keyboard::Right) {
+
+                selectCard++;
+
+            }
+            if (event.key.code == sf::Keyboard::Space) {
+
+
+                pressSpace = true;
+
+            }
+
+            if (event.key.code == sf::Keyboard::Enter) {
+
+                if (turn == 1) {
+
+                    turn = 2;
+                    
+                }
+
+                else {
+
+                    turn = 1;
+
+                }
+
+            }
+
+
+        }
+       
+
+    }
+
+}
+
+
 using namespace std;
 
 int main()
 {
-
+    int selectCard = 0;
+    int turn = 1;
+    bool pressSpace = false;
     sf::RenderWindow window(sf::VideoMode(900, 700), "Juego uno");
     sf::Texture texture;
     texture.loadFromFile("Cards.png");
-    //sf::Sprite sprite;
-    //sprite.setTexture(texture);
-    //sprite.setTextureRect(sf::IntRect(0, 0, 58, 86)); //cada 57 en x cada 86 en y
 
 
 
@@ -63,20 +121,32 @@ int main()
 
     while (window.isOpen()) {
 
-        sf::Event event;
+        interactWithKeyboard(window, selectCard, turn, pressSpace);
 
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed) window.close();
+        window.clear(sf::Color::White);
+
+        if (turn == 1) {
+
+            playerOne.drawCards(window, 0, 0, selectCard, usedCard, pressSpace);
+
+            /*if (pressSpace) {
+
+                usedCard = playerOne.takeCard(selectCard);
+                
+            }*/
+            
         }
+        if (turn == 2) {
 
+            playerTwo.drawCards(window, 0, 500, selectCard, usedCard, pressSpace);
 
+            /*if (pressSpace) {
 
-        window.clear();
+                usedCard = playerTwo.takeCard(selectCard);
+            }*/
 
-        playerOne.drawCards(window, 0, 0);
-        playerTwo.drawCards(window, 0, 500);
-        //window.draw(sprite);
+        }
+        
         window.display();
 
     }
