@@ -130,7 +130,7 @@ public:
 
 	}
 
-	void drawCards(sf:: RenderWindow &window, float x, float y, int& selectCard, card& usedCard, bool& pressSpace) {
+	void drawPlayerCards(sf:: RenderWindow &window, float x, float y, int& selectCard, card& usedCard, bool& pressSpace) {
 
 		if (selectCard < 0) {
 
@@ -147,6 +147,13 @@ public:
 
 		for (int i = 0; i < cards.size(); i++) {
 
+			if (sprite.getPosition().x > 900) {
+
+				y = y + 100;
+				sprite.setPosition(x, y);
+				
+			}
+
 			switchCard(cards[i].type, cards[i].color);
 			if (selectCard == i) {
 
@@ -160,7 +167,7 @@ public:
 
 		}
 
-		sprite.setPosition(0, 300);
+		sprite.setPosition(0, 250);
 		switchCard(usedCard.type, usedCard.color);
 		window.draw(sprite);
 		playerActions(usedCard, pressSpace, selectCard);
@@ -177,6 +184,24 @@ public:
 	void switchCard(int type,  int color) {
 
 		sprite.setTextureRect(sf::IntRect(type*57, color*86, 57, 86));
+
+	}
+
+	void drawDeckCards(sf::RenderWindow& window, float x, float y) {
+
+		sprite.setPosition(x, y);
+		switchCard(cards[0].type, cards[0].color);
+		window.draw(sprite);
+
+	}
+
+	void takeCardFromDeck(bool& pressZ, Player& cardsSet) {
+
+		if (pressZ && cards.size() < 24) {
+
+			addCard(cardsSet.takeCard(0));
+
+		}
 
 	}
 

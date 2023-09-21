@@ -8,10 +8,11 @@
 
 
 
-void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace) {
+void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ) {
 
     sf::Event event;
     pressSpace = false;
+    pressZ = false;
 
     while (window.pollEvent(event)) {
 
@@ -57,11 +58,28 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
 
             }
 
+            if (event.key.code == sf::Keyboard::Z) {
+
+                pressZ = true;
+                
+            }
+
 
         }
        
 
     }
+
+}
+
+void stopCard(int& lastTurn, card& usedCard, int& turn) {
+
+    if (usedCard.type == 10) {
+
+        turn = lastTurn;
+
+    }
+    lastTurn = turn;
 
 }
 
@@ -73,11 +91,13 @@ int main()
     int selectCard = 0;
     int turn = 1;
     bool pressSpace = false;
+    bool pressZ = false;
     sf::RenderWindow window(sf::VideoMode(900, 700), "Juego uno");
     sf::Texture texture;
     texture.loadFromFile("Cards.png");
 
 
+    int lastTurn = turn;
 
     srand(time(0));
 
@@ -88,6 +108,7 @@ int main()
 
     playerOne.setCardTexture(texture);
     playerTwo.setCardTexture(texture);
+    cardsSet.setCardTexture(texture);
 
     cardsSet.generateCards();
     cardsSet.shuffleCards();
@@ -121,29 +142,27 @@ int main()
 
     while (window.isOpen()) {
 
-        interactWithKeyboard(window, selectCard, turn, pressSpace);
+        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ);
 
         window.clear(sf::Color::White);
 
+        cardsSet.drawDeckCards(window, 500, 250);
+
+        stopCard(lastTurn, usedCard, turn);
+
         if (turn == 1) {
 
-            playerOne.drawCards(window, 0, 0, selectCard, usedCard, pressSpace);
+            playerOne.drawPlayerCards(window, 0, 0, selectCard, usedCard, pressSpace);
 
-            /*if (pressSpace) {
+            playerOne.takeCardFromDeck(pressZ, cardsSet);
 
-                usedCard = playerOne.takeCard(selectCard);
-                
-            }*/
-            
         }
+
         if (turn == 2) {
 
-            playerTwo.drawCards(window, 0, 500, selectCard, usedCard, pressSpace);
+            playerTwo.drawPlayerCards(window, 0, 450, selectCard, usedCard, pressSpace);
 
-            /*if (pressSpace) {
-
-                usedCard = playerTwo.takeCard(selectCard);
-            }*/
+            playerTwo.takeCardFromDeck(pressZ, cardsSet);
 
         }
         
@@ -162,6 +181,3 @@ int main()
 
 
 }
-
-//Si 13 se cambia color, si es igual a 14 se le agrega 4, 
-//si es igual a 12 se le agrega 2, si es igual a 11 bloqueo, si es igual 10 reversa
