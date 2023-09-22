@@ -8,11 +8,12 @@
 
 
 
-void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ) {
+void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter) {
 
     sf::Event event;
     pressSpace = false;
     pressZ = false;
+    pressEnter = false;
 
     while (window.pollEvent(event)) {
 
@@ -44,17 +45,7 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
 
             if (event.key.code == sf::Keyboard::Enter) {
 
-                if (turn == 1) {
-
-                    turn = 2;
-                    
-                }
-
-                else {
-
-                    turn = 1;
-
-                }
+                pressEnter = true;
 
             }
 
@@ -91,7 +82,9 @@ int main()
     int selectCard = 0;
     int turn = 1;
     bool pressSpace = false;
+    bool pressEnter = false;
     bool pressZ = false;
+    int countCards = 0;
     sf::RenderWindow window(sf::VideoMode(900, 700), "Juego uno");
     sf::Texture texture;
     texture.loadFromFile("Cards.png");
@@ -142,27 +135,34 @@ int main()
 
     while (window.isOpen()) {
 
-        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ);
+        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter);
 
         window.clear(sf::Color::White);
 
         cardsSet.drawDeckCards(window, 500, 250);
 
+        if (turn > 2) {
+
+            turn = 1;
+
+        }
+
         stopCard(lastTurn, usedCard, turn);
 
         if (turn == 1) {
 
-            playerOne.drawPlayerCards(window, 0, 0, selectCard, usedCard, pressSpace);
+            playerOne.drawPlayerCards(window, 0, 0, selectCard, usedCard, pressSpace, turn, pressEnter, countCards);
 
-            playerOne.takeCardFromDeck(pressZ, cardsSet);
+            playerOne.takeCardFromDeck(pressZ, cardsSet, countCards, turn);
 
         }
+        
 
-        if (turn == 2) {
+        else {
 
-            playerTwo.drawPlayerCards(window, 0, 450, selectCard, usedCard, pressSpace);
+            playerTwo.drawPlayerCards(window, 0, 450, selectCard, usedCard, pressSpace, turn, pressEnter, countCards);
 
-            playerTwo.takeCardFromDeck(pressZ, cardsSet);
+            playerTwo.takeCardFromDeck(pressZ, cardsSet, countCards, turn);
 
         }
         
