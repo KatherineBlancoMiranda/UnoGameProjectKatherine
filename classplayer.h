@@ -20,11 +20,11 @@ public:
 		int cardSelection;
 
 		showCards();
-		
+
 
 		cin >> cardSelection;
 
-		if (compareColors(cardSelection, *usedCard)|| compareType(cardSelection, *usedCard)) {
+		if (compareColors(cardSelection, *usedCard) || compareType(cardSelection, *usedCard)) {
 
 			*usedCard = takeCard(cardSelection);
 
@@ -94,7 +94,7 @@ public:
 
 	}
 
-	card takeCard(int cardPosition) {				
+	card takeCard(int cardPosition) {
 
 		card temporalCard = cards[cardPosition];
 		cards.erase(cards.begin() + cardPosition);
@@ -102,7 +102,7 @@ public:
 
 	}
 
-	card seeCard(int cardPosition) {				
+	card seeCard(int cardPosition) {
 
 		return cards[cardPosition];
 
@@ -180,16 +180,16 @@ public:
 
 	}
 
-	void setCardTexture(sf:: Texture &texture) {
+	void setCardTexture(sf::Texture& texture) {
 
 		sprite.setTexture(texture);
 
 
 	}
 
-	void switchCard(int type,  int color) {
+	void switchCard(int type, int color) {
 
-		sprite.setTextureRect(sf::IntRect(type*57, color*86, 57, 86));
+		sprite.setTextureRect(sf::IntRect(type * 57, color * 86, 57, 86));
 
 	}
 
@@ -231,52 +231,74 @@ public:
 
 	}
 
-	/*void changeColorCard(card& usedCard) {
 
-		if (usedCard.type == 13) {
+	void changeCardColor(int& selectCard, bool& pressX) {
 
+		if (!pressX) {
 
+			return;
+
+		}
+		if (cards[selectCard].type < 13) {
+
+			return;
+		}
+		cards[selectCard].color++;
+		if (cards[selectCard].color > 3) {
+
+			cards[selectCard].color = 0;
 
 		}
 
-	}*/
-	
+	}
+
+
+
 
 private:
 
 	std::vector<card> cards;
 	sf::Sprite sprite;
 	bool colorLock = false;
-	int numberOfCards;
+	int numberOfCards = 0;
 
 	void playerActions(card& usedCard, bool& pressSpace, int& selectCard, int& turn, int& countCards) {
 
 		if (pressSpace && validCard(usedCard, selectCard, countCards)) {
 
 			card tempCard = usedCard;
+
+
 			
 			if (validColorCard(usedCard, selectCard)) {
 
 				usedCard = takeCard(selectCard);
-				if (usedCard.type == 12) {
 
-					countCards = countCards + 2;
+				if (usedCard.type == 14) {
+
 					passTurn(turn);
+					countCards = countCards + 4;
+
 
 				}
-				/*if (usedCard.type == 14) {
+				if (usedCard.type == 12) {
 
-					countCards = countCards + 4;
 					passTurn(turn);
+					countCards = countCards + 2;
 
-				}*/
+
+				}
+
+
 			}
-			colorLock = true;
 			if (tempCard.color != usedCard.color) {
 
 				passTurn(turn);
 
 			}
+
+			//colorLock = true;
+	
 			
 			
 		}
@@ -302,15 +324,15 @@ private:
 
 	}
 
-	bool validCard(card usedCard, int selectCard, int& countCards) {
+	bool validCard(card& usedCard, int& selectCard, int& countCards) {
 
 		if (countCards > 0) {
 
-			/*if (seeCard(selectCard).type == 14) {
+			if (seeCard(selectCard).type == 14) {
 
 				return true;
 
-			}*/
+			}
 
 			if (seeCard(selectCard).type == 12) {
 
@@ -334,7 +356,7 @@ private:
 
 		}
 
-		if (seeCard(selectCard).type == 13 || seeCard(selectCard).type == 14) { //
+		if (seeCard(selectCard).type == 13 || seeCard(selectCard).type == 14) { 
 
 			return true;
 

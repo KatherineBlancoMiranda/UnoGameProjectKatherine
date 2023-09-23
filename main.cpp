@@ -8,12 +8,13 @@
 
 
 
-void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter) {
+void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter, bool& pressX) {
 
     sf::Event event;
     pressSpace = false;
     pressZ = false;
     pressEnter = false;
+    pressX = false;
 
     while (window.pollEvent(event)) {
 
@@ -54,6 +55,11 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
                 pressZ = true;
                 
             }
+            if (event.key.code == sf::Keyboard::X) {
+
+                pressX = true;
+
+            }
 
 
         }
@@ -84,10 +90,13 @@ int main()
     bool pressSpace = false;
     bool pressEnter = false;
     bool pressZ = false;
+    bool pressX = false;
     int countCards = 0;
     sf::RenderWindow window(sf::VideoMode(900, 700), "Juego uno");
     sf::Texture texture;
     texture.loadFromFile("Cards.png");
+    sf::Texture colorTexture;
+    colorTexture.loadFromFile("colors.png");
 
 
     int lastTurn = turn;
@@ -135,7 +144,7 @@ int main()
 
     while (window.isOpen()) {
 
-        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter);
+        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter, pressX);
 
         window.clear(sf::Color::White);
 
@@ -155,6 +164,8 @@ int main()
 
             playerOne.takeCardFromDeck(pressZ, cardsSet, countCards, turn);
 
+            playerOne.changeCardColor(selectCard, pressX);
+
         }
         
 
@@ -163,6 +174,8 @@ int main()
             playerTwo.drawPlayerCards(window, 0, 450, selectCard, usedCard, pressSpace, turn, pressEnter, countCards);
 
             playerTwo.takeCardFromDeck(pressZ, cardsSet, countCards, turn);
+
+            playerTwo.changeCardColor(selectCard, pressX);
 
         }
         
