@@ -8,13 +8,14 @@
 
 
 
-void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter, bool& pressX) {
+void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter, bool& pressX, bool& leftClick) {
 
     sf::Event event;
     pressSpace = false;
     pressZ = false;
     pressEnter = false;
     pressX = false;
+    leftClick = false;
 
     while (window.pollEvent(event)) {
 
@@ -61,10 +62,18 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
 
             }
 
+        }
+        if (event.type == sf::Event::MouseButtonPressed) {
+
+            if (event.mouseButton.button == sf::Mouse::Left) {
+
+                leftClick = true;
+                cout << "sirve" << endl;
+
+            }
 
         }
        
-
     }
 
 }
@@ -80,6 +89,45 @@ void stopCard(int& lastTurn, card& usedCard, int& turn) {
 
 }
 
+void zeroCard(Player& playerOne, Player& playerTwo, card& usedCard) {
+
+    Player savePlayerCards;
+
+    if (!usedCard.effect) {
+
+        return;
+
+    }
+
+    if (usedCard.type == 0) {
+        
+        Player savePlayerCards = playerOne;
+        playerOne = playerTwo;
+        playerTwo = savePlayerCards;
+
+    }
+    usedCard.effect = false;
+}
+        
+void drawUnoButton(sf::Texture& unoButtonTexture, sf::Sprite& unoButtonSprite, sf::RenderWindow& window) {
+
+    unoButtonSprite.setTexture(unoButtonTexture);
+
+    unoButtonSprite.setPosition(600, 300);
+
+    window.draw(unoButtonSprite);
+
+}
+
+bool activeUnoButton(bool& leftClick) {
+
+    if (leftClick) {
+
+        return true;
+
+    }
+}
+      
 
 using namespace std;
 
@@ -91,12 +139,15 @@ int main()
     bool pressEnter = false;
     bool pressZ = false;
     bool pressX = false;
+    bool leftClick = false;
+    bool unoButtonPressed = false;
     int countCards = 0;
     sf::RenderWindow window(sf::VideoMode(900, 700), "Juego uno");
     sf::Texture texture;
     texture.loadFromFile("Cards.png");
-    sf::Texture colorTexture;
-    colorTexture.loadFromFile("colors.png");
+    sf::Texture unoButtonTexture;
+    sf::Sprite unoButtonSprite;
+    unoButtonTexture.loadFromFile("unobutton.png");
 
 
     int lastTurn = turn;
@@ -144,9 +195,11 @@ int main()
 
     while (window.isOpen()) {
 
-        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter, pressX);
+        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter, pressX, leftClick);
 
         window.clear(sf::Color::White);
+
+        drawUnoButton(unoButtonTexture, unoButtonSprite, window);
 
         cardsSet.drawDeckCards(window, 500, 250);
 
@@ -155,14 +208,21 @@ int main()
             turn = 1;
 
         }
+        if (leftClick) {
+
+            unoButtonPressed = true;
+
+        }
 
         stopCard(lastTurn, usedCard, turn);
-
+        
+        
+        playerOne.activeUnoButtonNotPressed(unoButtonPressed, cardsSet);
         if (turn == 1) {
 
-            playerOne.drawPlayerCards(window, 0, 0, selectCard, usedCard, pressSpace, turn, pressEnter, countCards);
+            playerOne.drawPlayerCards(window, 0, 0, selectCard, usedCard, pressSpace, turn, pressEnter, countCards, unoButtonPressed);
 
-            playerOne.takeCardFromDeck(pressZ, cardsSet, countCards, turn);
+            playerOne.takeCardFromDeck(pressZ, cardsSet, countCards, turn, unoButtonPressed);
 
             playerOne.changeCardColor(selectCard, pressX);
 
@@ -171,13 +231,17 @@ int main()
 
         else {
 
-            playerTwo.drawPlayerCards(window, 0, 450, selectCard, usedCard, pressSpace, turn, pressEnter, countCards);
+            playerTwo.drawPlayerCards(window, 0, 450, selectCard, usedCard, pressSpace, turn, pressEnter, countCards, unoButtonPressed);
 
-            playerTwo.takeCardFromDeck(pressZ, cardsSet, countCards, turn);
+            playerTwo.takeCardFromDeck(pressZ, cardsSet, countCards, turn, unoButtonPressed);
 
             playerTwo.changeCardColor(selectCard, pressX);
 
         }
+        playerTwo.activeUnoButtonNotPressed(unoButtonPressed, cardsSet);
+        zeroCard(playerOne, playerTwo, usedCard);
+        
+
         
         window.display();
 

@@ -130,7 +130,7 @@ public:
 
 	}
 
-	void drawPlayerCards(sf::RenderWindow& window, float x, float y, int& selectCard, card& usedCard, bool& pressSpace, int& turn, bool& pressEnter, int& countCards) {
+	void drawPlayerCards(sf::RenderWindow& window, float x, float y, int& selectCard, card& usedCard, bool& pressSpace, int& turn, bool& pressEnter, int& countCards, bool& unoButtonPressed) {
 
 		if (selectCard < 0) {
 
@@ -170,11 +170,11 @@ public:
 		sprite.setPosition(0, 250);
 		switchCard(usedCard.type, usedCard.color);
 		window.draw(sprite);
-		playerActions(usedCard, pressSpace, selectCard, turn, countCards);
+		playerActions(usedCard, pressSpace, selectCard, turn, countCards, unoButtonPressed);
 
 		if (pressEnter && countCards == 0) {
 
-			passTurn(turn);
+			passTurn(turn, unoButtonPressed);
 
 		}
 
@@ -201,7 +201,7 @@ public:
 
 	}
 
-	void takeCardFromDeck(bool& pressZ, Player& cardsSet, int& countCards, int& turn) {
+	void takeCardFromDeck(bool& pressZ, Player& cardsSet, int& countCards, int& turn, bool& unoButtonPressed) {
 
 		if (pressZ && cards.size() < 24) {
 
@@ -216,18 +216,19 @@ public:
 
 				}
 				countCards = 0;
-				passTurn(turn);
+				passTurn(turn, unoButtonPressed);
 			}
 
 		}
 
 	}
 
-	void passTurn(int& turn) {
+	void passTurn(int& turn, bool& unoButtonPressed) {
 
 		turn++;
 		colorLock = false;
 		numberOfCards = 0;
+		unoButtonPressed = false;
 
 	}
 
@@ -252,7 +253,19 @@ public:
 
 	}
 
+	void activeUnoButtonNotPressed(bool& unoButtonPressed, Player& cardsSet) {
 
+		if (!unoButtonPressed && cards.size() == 1) {
+			
+			for (int i = 0; i < 2; i++) {
+
+				addCard(cardsSet.takeCard(0));
+
+			}
+
+		}
+
+	}
 
 
 private:
@@ -262,13 +275,11 @@ private:
 	bool colorLock = false;
 	int numberOfCards = 0;
 
-	void playerActions(card& usedCard, bool& pressSpace, int& selectCard, int& turn, int& countCards) {
+	void playerActions(card& usedCard, bool& pressSpace, int& selectCard, int& turn, int& countCards, bool& unoButtonPressed) {
 
 		if (pressSpace && validCard(usedCard, selectCard, countCards)) {
 
 			card tempCard = usedCard;
-
-
 			
 			if (validColorCard(usedCard, selectCard)) {
 
@@ -276,28 +287,29 @@ private:
 
 				if (usedCard.type == 14) {
 
-					passTurn(turn);
+					passTurn(turn, unoButtonPressed);
 					countCards = countCards + 4;
 
 
 				}
 				if (usedCard.type == 12) {
 
-					passTurn(turn);
+					passTurn(turn, unoButtonPressed);
 					countCards = countCards + 2;
 
 
 				}
 
+				colorLock = true;
+				if (tempCard.color != usedCard.color) {
 
+					passTurn(turn, unoButtonPressed);
+
+				}
 			}
-			if (tempCard.color != usedCard.color) {
 
-				passTurn(turn);
 
-			}
-
-			//colorLock = true;
+			
 	
 			
 			
