@@ -4,135 +4,12 @@
 #include <ctime>
 #include <cstdlib>
 #include "classplayer.h"
-#include "showusedcard.h"
 #include "classmenu.h"
-
-
-void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter, bool& pressX, bool& leftClick, bool& pressOne) {
-
-    sf::Event event;
-    pressSpace = false;
-    pressZ = false;
-    pressEnter = false;
-    pressX = false;
-    leftClick = false;
-    pressOne = false;
-
-    while (window.pollEvent(event)) {
-
-        if (event.type == sf::Event::Closed) {
-
-            window.close();
-
-        }
-
-        if (event.type == sf::Event::KeyPressed) {
-
-            if (event.key.code == sf::Keyboard::Left) {
-
-                selectCard--;
-
-            }
-
-            if (event.key.code == sf::Keyboard::Right) {
-
-                selectCard++;
-
-            }
-            if (event.key.code == sf::Keyboard::Space) {
-
-
-                pressSpace = true;
-
-            }
-
-            if (event.key.code == sf::Keyboard::Enter) {
-
-                pressEnter = true;
-
-            }
-
-            if (event.key.code == sf::Keyboard::Z) {
-
-                pressZ = true;
-                
-            }
-            if (event.key.code == sf::Keyboard::X) {
-
-                pressX = true;
-
-            }
-            if (event.key.code == sf::Keyboard::Num1) {
-
-                pressOne = true;
-
-            }
-
-        }
-        if (event.type == sf::Event::MouseButtonPressed) {
-
-            if (event.mouseButton.button == sf::Mouse::Left) {
-
-                leftClick = true;
-
-            }
-
-        }
-       
-    }
-
-}
-
-void stopCard(int& lastTurn, card& usedCard, int& turn) {
-
-    if (usedCard.type == 10) {
-
-        turn = lastTurn;
-
-    }
-    lastTurn = turn;
-
-}
-
-void zeroCard(Player& playerOne, Player& playerTwo, card& usedCard) {
-
-    Player savePlayerCards;
-
-    if (!usedCard.effect) {
-
-        return;
-
-    }
-
-    if (usedCard.type == 0) {
-        
-        Player savePlayerCards = playerOne;
-        playerOne = playerTwo;
-        playerTwo = savePlayerCards;
-
-    }
-    usedCard.effect = false;
-}
-        
-void drawUnoButton(sf::Texture& unoButtonTexture, sf::Sprite& unoButtonSprite, sf::RenderWindow& window) {
-
-    unoButtonSprite.setTexture(unoButtonTexture);
-
-    unoButtonSprite.setPosition(600, 300);
-
-    window.draw(unoButtonSprite);
-
-}
-
-bool activeUnoButton(bool& leftClick) {
-
-    if (leftClick) {
-
-        return true;
-
-    }
-}
-      
+#include "interactwithkeyboard.h"
+#include "stopcard.h"
+#include "zerocard.h"
+#include "drawunobutton.h"
+#include "activeunobutton.h"
 
 using namespace std;
 
@@ -140,6 +17,7 @@ int main()
 {
     int selectCard = 0;
     int turn = 1;
+    int lastTurn = turn;
     bool pressSpace = false;
     bool pressEnter = false;
     bool pressZ = false;
@@ -157,11 +35,6 @@ int main()
     menuTexture.loadFromFile("menu.png");
     unoButtonTexture.loadFromFile("unobutton.png");
 
-    
-
-
-    int lastTurn = turn;
-
     srand(time(0));
 
     Player playerOne;
@@ -177,7 +50,6 @@ int main()
 
     cardsSet.generateCards();
     cardsSet.shuffleCards();
-
 
     for (int i = 0; i < 8; i++) {
 
@@ -230,7 +102,6 @@ int main()
 
         stopCard(lastTurn, usedCard, turn);
         
-        
         playerOne.activeUnoButtonNotPressed(unoButtonPressed, cardsSet);
         if (turn == 1) {
 
@@ -247,7 +118,6 @@ int main()
             }
 
         }
-        
 
         else {
 
@@ -272,15 +142,5 @@ int main()
         window.display();
 
     }
-
-   /* while (true) {
-
-        playerOne.doActions(&usedCard);
-        playerTwo.doActions(&usedCard);
-
-    }*/
-
-
-
 
 }
