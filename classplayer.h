@@ -172,6 +172,7 @@ public:
 		window.draw(sprite);
 		playerActions(usedCard, pressSpace, selectCard, turn, countCards, unoButtonPressed);
 
+
 		if (pressEnter && countCards == 0) {
 
 			passTurn(turn, unoButtonPressed);
@@ -265,6 +266,11 @@ public:
 
 		}
 
+	}
+
+	int getTotalCards() {
+
+		return cards.size();
 	}
 
 

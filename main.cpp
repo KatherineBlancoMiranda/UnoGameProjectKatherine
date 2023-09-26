@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include "classplayer.h"
 #include "showusedcard.h"
+#include "classmenu.h"
 
 
-
-void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter, bool& pressX, bool& leftClick) {
+void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, bool& pressSpace, bool& pressZ, bool& pressEnter, bool& pressX, bool& leftClick, bool& pressOne) {
 
     sf::Event event;
     pressSpace = false;
@@ -16,6 +16,7 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
     pressEnter = false;
     pressX = false;
     leftClick = false;
+    pressOne = false;
 
     while (window.pollEvent(event)) {
 
@@ -61,6 +62,11 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
                 pressX = true;
 
             }
+            if (event.key.code == sf::Keyboard::Num1) {
+
+                pressOne = true;
+
+            }
 
         }
         if (event.type == sf::Event::MouseButtonPressed) {
@@ -68,7 +74,6 @@ void interactWithKeyboard(sf::RenderWindow& window, int& selectCard, int& turn, 
             if (event.mouseButton.button == sf::Mouse::Left) {
 
                 leftClick = true;
-                cout << "sirve" << endl;
 
             }
 
@@ -141,13 +146,18 @@ int main()
     bool pressX = false;
     bool leftClick = false;
     bool unoButtonPressed = false;
+    bool pressOne = false;
     int countCards = 0;
     sf::RenderWindow window(sf::VideoMode(900, 700), "Juego uno");
     sf::Texture texture;
     texture.loadFromFile("Cards.png");
     sf::Texture unoButtonTexture;
     sf::Sprite unoButtonSprite;
+    sf::Texture menuTexture;
+    menuTexture.loadFromFile("menu.png");
     unoButtonTexture.loadFromFile("unobutton.png");
+
+    
 
 
     int lastTurn = turn;
@@ -158,10 +168,12 @@ int main()
     Player playerTwo;
     Player cardsSet;
     card usedCard;
+    Menu menuOptions;
 
     playerOne.setCardTexture(texture);
     playerTwo.setCardTexture(texture);
     cardsSet.setCardTexture(texture);
+    menuOptions.setMenuTexture(menuTexture);
 
     cardsSet.generateCards();
     cardsSet.shuffleCards();
@@ -174,28 +186,30 @@ int main()
 
     }
 
-    cout << endl;
-    cout << endl;
-    cardsSet.showCards();
-    cout << endl;
-    cout << endl;
-
     usedCard = cardsSet.takeCard(0);
-    showUsedCard(usedCard);
-    cout << endl;
-    cout << endl;
 
-    cout << endl;
-    cout << endl;
-    playerOne.showCards();
-
-    cout << endl;
-    cout << endl;
-    playerTwo.showCards();
+    menuOptions.showMenu();
 
     while (window.isOpen()) {
 
-        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter, pressX, leftClick);
+        interactWithKeyboard(window, selectCard, turn, pressSpace, pressZ, pressEnter, pressX, leftClick, pressOne);
+
+        if (pressOne) {
+
+            menuOptions.hideBox();
+
+        }
+
+        if (menuOptions.boxIsOpen()) {
+
+            pressSpace = false;
+            pressZ = false;
+            pressEnter = false;
+            pressX = false;
+            leftClick = false;
+            selectCard = 0;
+
+        }
 
         window.clear(sf::Color::White);
 
@@ -226,6 +240,12 @@ int main()
 
             playerOne.changeCardColor(selectCard, pressX);
 
+            if (playerOne.getTotalCards() == 0) {
+
+                menuOptions.showWinner(0);
+
+            }
+
         }
         
 
@@ -237,12 +257,18 @@ int main()
 
             playerTwo.changeCardColor(selectCard, pressX);
 
+            if (playerTwo.getTotalCards() == 0) {
+
+                menuOptions.showWinner(475);
+
+            }
+
         }
         playerTwo.activeUnoButtonNotPressed(unoButtonPressed, cardsSet);
         zeroCard(playerOne, playerTwo, usedCard);
         
 
-        
+        menuOptions.drawMenu(window);
         window.display();
 
     }
