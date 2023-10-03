@@ -27,7 +27,7 @@ public:
 	card takeCard(int cardPosition);
 
 	card seeCard(int cardPosition);
-
+	//Evite tantos parametros
 	void drawPlayerCards(sf::RenderWindow& window, float x, float y, int& selectCard, card& usedCard, bool& pressSpace, int& turn, bool& pressEnter, int& countCards, bool& unoButtonPressed);
 
 	void setCardTexture(sf::Texture& texture);

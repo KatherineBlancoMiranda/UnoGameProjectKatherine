@@ -12,7 +12,7 @@
 #include "activeunobutton.h"
 
 using namespace std;
-
+//Debe mover la logica del main a una clase
 int main()
 {
     int selectCard = 0;
@@ -110,7 +110,7 @@ int main()
             playerOne.takeCardFromDeck(pressZ, cardsSet, countCards, turn, unoButtonPressed);
 
             playerOne.changeCardColor(selectCard, pressX);
-
+            //Evitar tantas anidaciones
             if (playerOne.getTotalCards() == 0) {
 
                 menuOptions.showWinner(0);
@@ -126,7 +126,7 @@ int main()
             playerTwo.takeCardFromDeck(pressZ, cardsSet, countCards, turn, unoButtonPressed);
 
             playerTwo.changeCardColor(selectCard, pressX);
-
+            //Evitar tantas anidaciones
             if (playerTwo.getTotalCards() == 0) {
 
                 menuOptions.showWinner(475);

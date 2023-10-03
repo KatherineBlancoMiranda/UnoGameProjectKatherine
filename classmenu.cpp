@@ -1,11 +1,11 @@
 #include "classmenu.h"
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
-
+//Agregue las imagenes a una carpeta
 
 Menu::Menu()
 {
-	show = false;
+	show = false;//Use un mejor nombre para las variables booleanas
 
 }
 

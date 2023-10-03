@@ -17,7 +17,7 @@ void Player::generateCards()
 
 			cards.push_back({ count, i });
 			count++;
-
+//Cambiar por la función MIN
 			if (count >= 13) {
 
 				count = 1;
@@ -135,7 +135,7 @@ void Player::takeCardFromDeck(bool& pressZ, Player& cardsSet, int& countCards, i
 		numberOfCards++;
 
 		if (countCards > 0) {
-
+		//Evitar tantas anidaciones
 			for (int i = 0; i < countCards; i++) {
 
 				addCard(cardsSet.takeCard(0));
@@ -202,7 +202,7 @@ void Player::playerActions(card& usedCard, bool& pressSpace, int& selectCard, in
 		if (validColorCard(usedCard, selectCard)) {
 
 			usedCard = takeCard(selectCard);
-
+			//Evitar tantas anidaciones 
 			if (usedCard.type == 14) {
 
 				passTurn(turn, unoButtonPressed);
@@ -247,6 +247,7 @@ bool Player::validColorCard(card& usedCard, int& selectCard)
 
 bool Player::validCard(card& usedCard, int& selectCard, int& countCards)
 {
+	//Utilice variables para mejorar la lectura de las expresiones y evite los numeros mágicos
 	if (countCards > 0) {
 
 		if (seeCard(selectCard).type == 14) {
